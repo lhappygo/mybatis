@@ -45,6 +45,7 @@ import org.apache.ibatis.transaction.Transaction;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
+ *  mybatis一级缓存的生命周期与sqlSession的生命周期一样，一级缓存是在BaseExecutor中实现。
  * @author Clinton Begin
  */
 public abstract class BaseExecutor implements Executor {
@@ -55,6 +56,10 @@ public abstract class BaseExecutor implements Executor {
   protected Executor wrapper;
 
   protected ConcurrentLinkedQueue<DeferredLoad> deferredLoads;
+  /**
+   *  localCache对象，就是用来保存缓存数据
+   */
+
   protected PerpetualCache localCache;
   protected PerpetualCache localOutputParameterCache;
   protected Configuration configuration;
@@ -65,7 +70,11 @@ public abstract class BaseExecutor implements Executor {
   protected BaseExecutor(Configuration configuration, Transaction transaction) {
     this.transaction = transaction;
     this.deferredLoads = new ConcurrentLinkedQueue<DeferredLoad>();
+    /**
+     * 创建一个缓存对象,PrepetualCache并不是线程安全的，但SqlSession和Executor对象通常情况下只有一个线程访问，而且访问完成之后马上销毁
+     */
     this.localCache = new PerpetualCache("LocalCache");
+    //执行过程中的缓存
     this.localOutputParameterCache = new PerpetualCache("LocalOutputParameterCache");
     this.closed = false;
     this.configuration = configuration;
@@ -129,9 +138,20 @@ public abstract class BaseExecutor implements Executor {
     return doFlushStatements(isRollBack);
   }
 
+  /**
+   *
+   * @param ms
+   * @param parameter
+   * @param rowBounds
+   * @param resultHandler
+   * @param <E>
+   * @return
+   * @throws SQLException
+   */
   @Override
   public <E> List<E> query(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
     BoundSql boundSql = ms.getBoundSql(parameter);
+    //利用sql和执行的参数生成一个key，如果同一sql不同的执行参数，将会生成不同的key
     CacheKey key = createCacheKey(ms, parameter, rowBounds, boundSql);
     return query(ms, parameter, rowBounds, resultHandler, key, boundSql);
  }
@@ -149,10 +169,13 @@ public abstract class BaseExecutor implements Executor {
     List<E> list;
     try {
       queryStack++;
+      //从缓存中取出数据
       list = resultHandler == null ? (List<E>) localCache.getObject(key) : null;
       if (list != null) {
+        //如果缓存中有数据，处理过程的缓存
         handleLocallyCachedOutputParameters(ms, key, parameter, boundSql);
       } else {
+        //如果缓存中没有数据，将sql执行生成结果，并加入到localCache中
         list = queryFromDatabase(ms, parameter, rowBounds, resultHandler, key, boundSql);
       }
     } finally {
