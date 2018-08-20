@@ -17,6 +17,7 @@ package org.apache.ibatis.session;
 
 /**
  * @author Clinton Begin
+ *  执行器是真正执行java与数据库交互的东西
  */
 public enum ExecutorType {
 

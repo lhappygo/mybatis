@@ -26,13 +26,36 @@ import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.session.ResultHandler;
 
 /**
+ *   statementHandler
+ *      数据库会话处理器
+ *        作用：专门处理数据库会话。（进行预编译并且调用parameterHandler的setParameters()方法设置参数
+ *        类型有三种：simpleStatementHandler、prepareStatementHandler、callableStatementHandler，分别对应
+ *      executor的三种执行器(simple、reuse、batch)。
+ *      a、statementHandler的生成是由configuration方法中的newStatementHandler()方法生成的，但是正在创建的是
+ *      statementHandler接口的实现类routingStatementHandler对象。
+ *      b、routingStatementHandler的通过适配器模式找到对应的（上下文）statementHandler执行的，并且有simpleStatementHandler、
+ *      prepareStatementHandler、callableStatementHandler，分别对应executor的三种执行器(simple、reuse、batch)
+ *
+ *
  * @author Clinton Begin
  */
 public interface StatementHandler {
 
+  /**
+   * executor 执行器会先调用statementHandler.prepare()方法预编译sql语句
+   * @param connection
+   * @param transactionTimeout
+   * @return
+   * @throws SQLException
+   */
   Statement prepare(Connection connection, Integer transactionTimeout)
       throws SQLException;
 
+  /**
+   * 然后调用parameterize()方法(实际上启用ParameterHandler设置参数)
+   * @param statement
+   * @throws SQLException
+   */
   void parameterize(Statement statement)
       throws SQLException;
 

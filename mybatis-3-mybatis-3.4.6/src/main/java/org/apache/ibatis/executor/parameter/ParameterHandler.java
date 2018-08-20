@@ -19,14 +19,18 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 /**
+ *   参数处理器
+ *    默认实现 defaultParameterHandler
+ *    作用：对预编译中的参数进行设置，如果有typeHandler，会对注册的typeHandler的参数进行处理
  * A parameter handler sets the parameters of the {@code PreparedStatement}
  *
  * @author Clinton Begin
  */
 public interface ParameterHandler {
 
+  //返回参数对象
   Object getParameterObject();
-
+  //设置预编译参数
   void setParameters(PreparedStatement ps)
       throws SQLException;
 

@@ -83,8 +83,7 @@ public class MapperProxy<T> implements InvocationHandler, Serializable {
       constructor.setAccessible(true);
     }
     final Class<?> declaringClass = method.getDeclaringClass();
-    return constructor
-        .newInstance(declaringClass,
+    return constructor.newInstance(declaringClass,
             MethodHandles.Lookup.PRIVATE | MethodHandles.Lookup.PROTECTED
                 | MethodHandles.Lookup.PACKAGE | MethodHandles.Lookup.PUBLIC)
         .unreflectSpecial(method, declaringClass).bindTo(proxy).invokeWithArguments(args);

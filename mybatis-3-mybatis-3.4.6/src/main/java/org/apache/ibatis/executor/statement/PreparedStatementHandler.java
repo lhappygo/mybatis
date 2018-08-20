@@ -32,6 +32,7 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
 /**
+ *
  * @author Clinton Begin
  */
 public class PreparedStatementHandler extends BaseStatementHandler {
@@ -79,6 +80,13 @@ public class PreparedStatementHandler extends BaseStatementHandler {
     return resultSetHandler.<E> handleCursorResultSets(ps);
   }
 
+  /**
+   *
+   *   完成预编译
+   * @param connection
+   * @return
+   * @throws SQLException
+   */
   @Override
   protected Statement instantiateStatement(Connection connection) throws SQLException {
     String sql = boundSql.getSql();

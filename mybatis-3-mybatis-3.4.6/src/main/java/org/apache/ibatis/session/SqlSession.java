@@ -24,6 +24,16 @@ import org.apache.ibatis.cursor.Cursor;
 import org.apache.ibatis.executor.BatchResult;
 
 /**
+ *   sqlSession的运行主要是依靠executor 执行器调用（调度）statementHandler、parameterHandler、resultSetHandler，
+ *   executor首先通过创建statementHandler进行预编译并设置参数运行。需如下几步：
+ *     1）、prepare预编译sql
+ *            由适配器模式生成的routingStatementHandler根据上下文选择生成三种相应的xxxStatementHandler，
+ *        在生成xxxStatementHandler内部的instantiateStatement()方法执行底层的JDBC的preparement()方法完成预编译。
+ *     2）、parameterize设置参数
+ *            默认是defaultParameterHandler（）中setParameter方法完成参数设置，其中参数从parameterObject中取出，
+ *        交给typeHandler处理。
+ *     3）、doUpdate/doQuery执行sql
+ *            返回的结果通过默认的defaultResultSetHandler封装
  * The primary Java interface for working with MyBatis.
  * Through this interface you can execute commands, get mappers and manage transactions.
  *

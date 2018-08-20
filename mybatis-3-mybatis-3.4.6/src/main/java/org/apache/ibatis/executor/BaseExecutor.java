@@ -122,6 +122,7 @@ public abstract class BaseExecutor implements Executor {
     if (closed) {
       throw new ExecutorException("Executor was closed.");
     }
+    //执行insert/delete/update时会清除一级缓存
     clearLocalCache();
     return doUpdate(ms, parameter);
   }
@@ -350,6 +351,7 @@ public abstract class BaseExecutor implements Executor {
     } finally {
       localCache.removeObject(key);
     }
+    //将缓存加入到localCache中
     localCache.putObject(key, list);
     if (ms.getStatementType() == StatementType.CALLABLE) {
       localOutputParameterCache.putObject(key, parameter);
