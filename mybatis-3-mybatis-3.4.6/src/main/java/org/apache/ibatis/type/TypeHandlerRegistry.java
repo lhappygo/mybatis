@@ -49,6 +49,7 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.reflection.Jdk;
 
 /**
+ *   类型处理器注册管理类
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */
@@ -316,9 +317,15 @@ public final class TypeHandlerRegistry {
 
   // Only handler
 
+  /**
+   *
+   * @param typeHandler
+   * @param <T>
+   */
   @SuppressWarnings("unchecked")
   public <T> void register(TypeHandler<T> typeHandler) {
     boolean mappedTypeFound = false;
+    //在自定义typeHandler时，可以加上注解mappedTypes 指定关联的javaType,此处扫描mappedTypes注解。
     MappedTypes mappedTypes = typeHandler.getClass().getAnnotation(MappedTypes.class);
     if (mappedTypes != null) {
       for (Class<?> handledType : mappedTypes.value()) {
@@ -343,10 +350,22 @@ public final class TypeHandlerRegistry {
 
   // java type + handler
 
+  /**
+   *   注册配置javaType与typeHandler
+   * @param javaType
+   * @param typeHandler
+   * @param <T>
+   */
   public <T> void register(Class<T> javaType, TypeHandler<? extends T> typeHandler) {
     register((Type) javaType, typeHandler);
   }
 
+  /**
+   *   typeHandlerhe、javaType、jdbcType都配置了
+   * @param javaType
+   * @param typeHandler
+   * @param <T>
+   */
   private <T> void register(Type javaType, TypeHandler<? extends T> typeHandler) {
     MappedJdbcTypes mappedJdbcTypes = typeHandler.getClass().getAnnotation(MappedJdbcTypes.class);
     if (mappedJdbcTypes != null) {
@@ -371,6 +390,12 @@ public final class TypeHandlerRegistry {
     register((Type) type, jdbcType, handler);
   }
 
+  /**
+   *   注册typeHandler的核心方法，向map新增数据
+   * @param javaType
+   * @param jdbcType
+   * @param handler
+   */
   private void register(Type javaType, JdbcType jdbcType, TypeHandler<?> handler) {
     if (javaType != null) {
       Map<JdbcType, TypeHandler<?>> map = TYPE_HANDLER_MAP.get(javaType);
@@ -458,6 +483,7 @@ public final class TypeHandlerRegistry {
   // get information
   
   /**
+   *   通过configuration对象可以获取已注册所有的typeHandlers
    * @since 3.2.2
    */
   public Collection<TypeHandler<?>> getTypeHandlers() {

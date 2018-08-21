@@ -18,6 +18,8 @@ package org.apache.ibatis.session;
 import java.sql.Connection;
 
 /**
+ *   作用：创建sqlSession,sqlSession相当于jdbc的一个connection对象，每次应用程序需要访问数据库，都要通过sqlSessionFactory创建一个sqlSession,sqlSessionFactory在整个mybatis的生命周期中
+ *   （每个数据库对应一个sqlSessionFactory，单例产生的）
  * Creates an {@link SqlSession} out of a connection or a DataSource
  * 
  * @author Clinton Begin

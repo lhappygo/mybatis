@@ -28,15 +28,21 @@ import org.apache.ibatis.session.ResultHandler;
 /**
  *   statementHandler
  *      数据库会话处理器
+ *
  *        作用：专门处理数据库会话。（进行预编译并且调用parameterHandler的setParameters()方法设置参数
+ *
  *        类型有三种：simpleStatementHandler、prepareStatementHandler、callableStatementHandler，分别对应
  *      executor的三种执行器(simple、reuse、batch)。
+ *
  *      a、statementHandler的生成是由configuration方法中的newStatementHandler()方法生成的，但是正在创建的是
  *      statementHandler接口的实现类routingStatementHandler对象。
+ *
  *      b、routingStatementHandler的通过适配器模式找到对应的（上下文）statementHandler执行的，并且有simpleStatementHandler、
  *      prepareStatementHandler、callableStatementHandler，分别对应executor的三种执行器(simple、reuse、batch)
  *
+ *      c、baseStatementHandler中重写prepare()方法，instantiateStatement()方法完成预编译，之后设置一些基础配置（获取最大行数，超时)
  *
+ *      d、init
  * @author Clinton Begin
  */
 public interface StatementHandler {

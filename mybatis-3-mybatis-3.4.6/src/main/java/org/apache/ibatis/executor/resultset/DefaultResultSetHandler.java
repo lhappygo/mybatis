@@ -62,6 +62,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ *  默认结果集处理器
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Iwao AVE!
@@ -137,9 +138,14 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   // HANDLE OUTPUT PARAMETER
   //
 
+  /**
+   *  处理存储过程并输出参数
+   * @param cs
+   * @throws SQLException
+   */
   @Override
   public void handleOutputParameters(CallableStatement cs) throws SQLException {
-    final Object parameterObject = parameterHandler.getParameterObject();
+    final Object parameterObject = parameterHandler.getParameterObject();//从参数处理器中获取参数对象
     final MetaObject metaParam = configuration.newMetaObject(parameterObject);
     final List<ParameterMapping> parameterMappings = boundSql.getParameterMappings();
     for (int i = 0; i < parameterMappings.size(); i++) {
@@ -181,7 +187,7 @@ public class DefaultResultSetHandler implements ResultSetHandler {
   //
 
   /**
-   *
+   *  包装并返回结果集
    * @param stmt
    * @return
    * @throws SQLException

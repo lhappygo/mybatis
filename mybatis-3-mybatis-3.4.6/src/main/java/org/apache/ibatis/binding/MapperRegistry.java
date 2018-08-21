@@ -43,6 +43,7 @@ public class MapperRegistry {
 
   /**
    * getMapper方法就是用于创建接口的动态类。
+   *   (defaultSqlSession->configuration->mapperRegistry->mapperProxyFactory 获取动态代理类mapperProxy,每次调用dao方法都会创建一个代理类
    * @param type
    * @param sqlSession
    * @param <T>

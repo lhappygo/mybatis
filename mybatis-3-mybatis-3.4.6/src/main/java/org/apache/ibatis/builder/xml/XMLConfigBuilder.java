@@ -329,6 +329,11 @@ public class XMLConfigBuilder extends BaseBuilder {
     throw new BuilderException("Environment declaration requires a DataSourceFactory.");
   }
 
+  /**
+   *
+   * @param parent
+   * @throws Exception
+   */
   private void typeHandlerElement(XNode parent) throws Exception {
     if (parent != null) {
       for (XNode child : parent.getChildren()) {

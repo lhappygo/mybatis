@@ -761,6 +761,18 @@ public class Configuration {
     mapperRegistry.addMapper(type);
   }
 
+  /**
+   *     每当调用sqlSession的getMapper方法时，都会创建一个新的动态代理类实例，
+   *  且生成的动态代理类不是唯一的，而是每次都创建一个新的。sqlSession对象又将
+   *  getMapper方法委托给了Configuration对象执行。
+   *
+   *  (defaultSqlSession->configuration->mapperRegistry->mapperProxyFactory 获取动态代理类mapperProxy
+   *
+   * @param type
+   * @param sqlSession
+   * @param <T>
+   * @return
+   */
   public <T> T getMapper(Class<T> type, SqlSession sqlSession) {
     return mapperRegistry.getMapper(type, sqlSession);
   }

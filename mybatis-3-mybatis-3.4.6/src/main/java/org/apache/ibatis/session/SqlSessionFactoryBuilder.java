@@ -26,6 +26,9 @@ import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.session.defaults.DefaultSqlSessionFactory;
 
 /**
+ *
+ *   作用：一个构造器，创建了sqlSessionFactoryBuilder，任务就完成了，可以回收。
+ *
  * Builds {@link SqlSession} instances.
  *
  * @author Clinton Begin
